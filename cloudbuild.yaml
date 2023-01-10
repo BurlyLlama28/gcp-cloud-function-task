@@ -1,7 +1,7 @@
 substitutions:
   _APP: 'cf-task'
-  _PY_DIR: 'cf-tasks/function'
-  _TF_DIR: 'cf-tasks/terraform'
+  _PY_DIR: 'cf-task/function'
+  _TF_DIR: 'cf-task/terraform'
   _TF_ACTION: 'apply'
 
 steps:
@@ -28,7 +28,7 @@ steps:
     args:
       - '-c'
       - 'terraform apply'
-      - 'yes'
+      - '-auto-approve'
 
 # steps:
 #   - id: 'pre-deployment-checks'
