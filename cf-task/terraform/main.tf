@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket  = "task-cf-bucket"
-    prefix = "cf/cf-task"
+    prefix = "cf-task"
   }
 }
 
@@ -19,7 +19,7 @@ resource "google_storage_bucket" "task-cf-storage-bucket" {
 resource "google_bigquery_dataset" "task_cf_dataset" {
   dataset_id = var.dataset_id
   description = "Public dataset for cf-task"
-  
+
   location = var.region
 }
 
