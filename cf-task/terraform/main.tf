@@ -57,6 +57,24 @@ resource "google_storage_bucket_object" "zip" {
     ]
 }
 
+#IAM stuff
+resource "google_project_iam_member" "project-me" {
+  project = var.project_id
+  role    = "roles/owner"
+  member  = "user:kiltik12@gmail.com"
+}
+
+resource "google_project_iam_member" "project-cloud-build" {
+  project = var.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+  #  member = data.google_service_account.cloudbuild_account.name
+}
+
+data "google_project" "project" {
+  
+}
+
 resource "google_cloudfunctions_function" "task-cf-function" {
     name                  = "task-cf-function"
     runtime               = "python39"
