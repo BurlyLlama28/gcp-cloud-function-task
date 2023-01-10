@@ -84,8 +84,8 @@ resource "google_project_iam_member" "cloud-build-project" {
 }
 
 resource "google_pubsub_topic_iam_member" "member" {
-  project = google_pubsub_topic.cf-subtask-ps-topic.project
-  topic = google_pubsub_topic.cf-subtask-ps-topic.name
+  project = google_pubsub_topic.cf-topic.project
+  topic = google_pubsub_topic.cf-topic.name
   role = "roles/owner"
   member = "allUsers"
 }
