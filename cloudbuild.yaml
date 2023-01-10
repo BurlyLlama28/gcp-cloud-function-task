@@ -8,7 +8,7 @@ steps:
   - id: 'tf init'
     name: 'hashicorp/terraform:1.0.0'
     entrypoint: sh
-    dir: 'cf-tasks/terraform'
+    dir: 'cf-task/terraform'
     args:
       - '-c'
       - 'terraform init'
@@ -16,7 +16,7 @@ steps:
   - id: 'tf plan'
     name: 'hashicorp/terraform:1.0.0'
     entrypoint: sh
-    dir: 'cf-tasks/terraform'
+    dir: 'cf-task/terraform'
     args:
       - '-c'
       - 'terraform plan'
@@ -24,12 +24,12 @@ steps:
   - id: 'tf apply'
     name: 'hashicorp/terraform:1.0.0'
     entrypoint: sh
-    dir: 'cf-tasks/terraform'
+    dir: 'cf-task/terraform'
     args:
       - '-c'
       - 'terraform apply'
       - 'yes'
-      
+
 # steps:
 #   - id: 'pre-deployment-checks'
 #     name: 'gcr.io/some-project/common-build'
