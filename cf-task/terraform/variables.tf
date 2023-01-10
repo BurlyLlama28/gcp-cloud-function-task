@@ -10,12 +10,6 @@ variable "region" {
     description = "Region"
 }
 
-variable "zone" {
-    default     = "us-central1-c"
-    type        = string
-    description = "Zone"
-}
-
 variable "dataset_id" {
     default     = "task_cf_dataset"
     type        = string
@@ -23,30 +17,21 @@ variable "dataset_id" {
 }
 
 variable "table_id" {
-    default     = "cf-tasks-table"
+    default     = "task_cf_table"
     type        = string
     description = "Table dataflow task ID"
 }
 
+variable "pubsub_topic_name" {
+  default = "cf_pubsub_topic"
+  type = string
+}
+
+variable "subscription_name" {
+  default = "cf_pubsub_subscrp"
+  type = string
+}
+
 variable "deletion_protection" {
-    default = false
-}
-
-variable "force_destroy" {
-    default = true
-}
-
-variable "bucket_id" {
-    type = string
-    default = "cf-task"
-}
-
-variable "topic_id" {
-    type = string
-    default = "cf-pub/sub-topic"
-}
-
-variable "subscription_id" {
-    type = string
-    default = "cf-pub/sub-subscription"
+  default = false
 }
