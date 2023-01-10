@@ -27,8 +27,7 @@ steps:
     dir: 'cf-task/terraform'
     args:
       - '-c'
-      - 'terraform apply'
-      - '-auto-approve'
+      - 'terraform apply -auto-approve'
 
 # steps:
 #   - id: 'pre-deployment-checks'
