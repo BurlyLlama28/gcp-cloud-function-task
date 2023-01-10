@@ -38,15 +38,15 @@ variable "force_destroy" {
 
 variable "bucket_id" {
     type = string
-    default = "cf-task-nazar"
+    default = "cf-task"
 }
 
 variable "topic_id" {
     type = string
-    default = "cf-pub_sub-topic"
+    default = "cf-pub/sub-topic"
 }
 
 variable "subscription_id" {
     type = string
-    default = "cf-pub_sub-subscription"
+    default = "cf-pub/sub-subscription"
 }

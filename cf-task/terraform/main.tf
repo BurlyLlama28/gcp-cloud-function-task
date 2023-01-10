@@ -18,18 +18,6 @@ provider "google" {
   zone = var.zone
 }
 
-# resource "google_project_iam_member" "my-project" {
-#   project = var.project_id
-#   role    = "roles/owner"
-#   member  = "user:kiltik12@gmail.com"
-# }
-
-# resource "google_project_iam_member" "cloud-build-project" {
-#   project = var.project_id
-#   role    = "roles/owner"
-#   member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
-# }
-
 resource "google_storage_bucket" "task-cf-bucket" {
   name = "${var.project_id}-bucket"
   location = var.region
@@ -76,24 +64,37 @@ resource "google_pubsub_topic" "cf-topic" {
   name = var.topic_id
 }
 
-# resource "google_pubsub_topic_iam_member" "member" {
-#   project = google_pubsub_topic.cf-subtask-ps-topic.project
-#   topic = google_pubsub_topic.cf-subtask-ps-topic.name
-#   role = "roles/owner"
-#   member = "allUsers"
-# }
-
 resource "google_pubsub_subscription" "subscription" {
   project = var.project_id
   name = var.subscription_id
   topic = google_pubsub_topic.cf-topic.name
 }
 
-# resource "google_pubsub_subscription_iam_member" "sub-owner" {
-#   subscription = google_pubsub_subscription.cf-subtask-ps-subscription.name
-#   role = "roles/owner"
-#   member = "allUsers"
-# }
+################################### IAM stuff ###################################
+resource "google_project_iam_member" "my-project" {
+  project = var.project_id
+  role    = "roles/owner"
+  member  = "user:kiltik12@gmail.com"
+}
+
+resource "google_project_iam_member" "cloud-build-project" {
+  project = var.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
+}
+
+resource "google_pubsub_topic_iam_member" "member" {
+  project = google_pubsub_topic.cf-subtask-ps-topic.project
+  topic = google_pubsub_topic.cf-subtask-ps-topic.name
+  role = "roles/owner"
+  member = "allUsers"
+}
+
+resource "google_pubsub_subscription_iam_member" "sub-owner" {
+  subscription = google_pubsub_subscription.cf-subtask-ps-subscription.name
+  role = "roles/owner"
+  member = "allUsers"
+}
 
 resource "google_cloudfunctions_function" "task-cf-function" {
   name                  = "cf-tasks-function"
