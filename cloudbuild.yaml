@@ -4,65 +4,65 @@ substitutions:
   _TF_DIR: 'cf-task/terraform'
   _TF_ACTION: 'apply'
 
-# steps:
-#   - id: 'tf init'
-#     name: 'hashicorp/terraform:1.0.0'
-#     entrypoint: sh
-#     dir: 'cf-task/terraform'
-#     args:
-#       - '-c'
-#       - 'terraform init'
-
-#   - id: 'tf plan'
-#     name: 'hashicorp/terraform:1.0.0'
-#     entrypoint: sh
-#     dir: 'cf-task/terraform'
-#     args:
-#       - '-c'
-#       - 'terraform plan'
-
-#   - id: 'tf apply'
-#     name: 'hashicorp/terraform:1.0.0'
-#     entrypoint: sh
-#     dir: 'cf-task/terraform'
-#     args:
-#       - '-c'
-#       - 'terraform apply'
-#       - '-auto-approve'
-
 steps:
-  - id: 'pre-deployment-checks'
-    name: 'gcr.io/some-project/common-build'
-    dir: '${_PY_DIR}'
+  - id: 'tf init'
+    name: 'hashicorp/terraform:1.0.0'
+    entrypoint: sh
+    dir: 'cf-task/terraform'
     args:
-      - 'python3'
-      - '_DOCKER_TAG=3.8'
-      - '_LINT_OMIT_FILES=tests/*'
-    env:
-      - 'TF_ACTION=$_TF_ACTION'
+      - '-c'
+      - 'terraform init'
 
   - id: 'tf plan'
-    name: 'gcr.io/some-project/terragrunt'
-    dir: '${_TF_DIR}'
+    name: 'hashicorp/terraform:1.0.0'
+    entrypoint: sh
+    dir: 'cf-task/terraform'
     args:
-      - '${_TF_ACTION}'
-    env:
-      - 'PULL_REQUEST_ID=$_PR_NUMBER'
-      - 'BRANCH=$BRANCH_NAME'
-      - 'EXECUTOR=terragrunt'
-      - 'BACKEND_PREFIX=task-cf'
+      - '-c'
+      - 'terraform plan'
 
   - id: 'tf apply'
-    name: 'gcr.io/some-project/terragrunt'
-    dir: '${_TF_DIR}'
+    name: 'hashicorp/terraform:1.0.0'
+    entrypoint: sh
+    dir: 'cf-task/terraform'
     args:
-      - '${_TF_ACTION}'
-    env:
-      - 'PULL_REQUEST_ID=$_PR_NUMBER'
-      - 'BRANCH=$BRANCH_NAME'
-      - 'EXECUTOR=terragrunt'
-      - 'BACKEND_PREFIX=task-cf'
+      - '-c'
+      - 'terraform apply'
+      - '-auto-approve'
 
-options:
-  substitution_option: 'ALLOW_LOOSE'
-tags: ['service-${_APP}-${_TF_ACTION}']
+# steps:
+#   - id: 'pre-deployment-checks'
+#     name: 'gcr.io/some-project/common-build'
+#     dir: '${_PY_DIR}'
+#     args:
+#       - 'python3'
+#       - '_DOCKER_TAG=3.8'
+#       - '_LINT_OMIT_FILES=tests/*'
+#     env:
+#       - 'TF_ACTION=$_TF_ACTION'
+
+#   - id: 'tf plan'
+#     name: 'gcr.io/some-project/terragrunt'
+#     dir: '${_TF_DIR}'
+#     args:
+#       - '${_TF_ACTION}'
+#     env:
+#       - 'PULL_REQUEST_ID=$_PR_NUMBER'
+#       - 'BRANCH=$BRANCH_NAME'
+#       - 'EXECUTOR=terragrunt'
+#       - 'BACKEND_PREFIX=task-cf'
+
+#   - id: 'tf apply'
+#     name: 'gcr.io/some-project/terragrunt'
+#     dir: '${_TF_DIR}'
+#     args:
+#       - '${_TF_ACTION}'
+#     env:
+#       - 'PULL_REQUEST_ID=$_PR_NUMBER'
+#       - 'BRANCH=$BRANCH_NAME'
+#       - 'EXECUTOR=terragrunt'
+#       - 'BACKEND_PREFIX=task-cf'
+
+# options:
+#   substitution_option: 'ALLOW_LOOSE'
+# tags: ['service-${_APP}-${_TF_ACTION}']
