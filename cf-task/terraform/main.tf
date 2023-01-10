@@ -1,7 +1,7 @@
 terraform {
-  backend "gcs" {
-      bucket = "task-cf"
-  }
+  # backend "gcs" {
+  #     bucket = "task-cf"
+  # }
   required_providers {
     google = {
       source = "hashicorp/google"
