@@ -71,7 +71,7 @@ resource "google_bigquery_table" "task-cf-table" {
   ]
 }
 
-resource "google_pubsub_topic" "topic" {
+resource "google_pubsub_topic" "cf-topic" {
   project = var.project_id
   name = var.topic_id
 }
@@ -86,7 +86,7 @@ resource "google_pubsub_topic" "topic" {
 resource "google_pubsub_subscription" "subscription" {
   project = var.project_id
   name = var.subscription_id
-  topic = google_pubsub_topic.topic.name
+  topic = google_pubsub_topic.cf-topic.name
 }
 
 # resource "google_pubsub_subscription_iam_member" "sub-owner" {
@@ -117,7 +117,7 @@ resource "google_cloudfunctions_function" "task-cf-function" {
 
   depends_on = [
     google_bigquery_dataset.task-cf-dataset,
-    google_pubsub_topic.cf-subtask-ps-topic,
+    google_pubsub_topic.cf-topic,
     google_storage_bucket.task-cf-bucket,
     google_storage_bucket_object.zip
   ]
