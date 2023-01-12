@@ -63,7 +63,7 @@ def store_data_into_pubsub(event):
     ps_client = PublisherClient()
     ps_publisher = PubSubPublisher(ps_client, PROJECT_ID, PUBSUB_TOPIC_ID)
 
-    data = bytes(event)
+    data = bytes(event, 'utf-8')
     ps_publisher.publish(data)
 
 def main(request):
