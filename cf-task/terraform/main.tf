@@ -1,60 +1,14 @@
 terraform {
   backend "gcs" {
-    bucket = "cf-task"
+    bucket = "cf-storage-task"
+    prefix = "cf-task"
   }
-  required_version = "1.3.6"
 }
 
 provider "google" {
 
   project = var.project_id
   region  = var.region
-}
-
-resource "google_storage_bucket" "task-cf-storage-bucket" {
-  name     = "${var.project_id}-storage-bucket"
-  location = var.region
-}
-
-resource "google_bigquery_dataset" "task_cf_dataset" {
-  dataset_id = var.dataset_id
-  description = "Public dataset for cf-task"
-
-  location = var.region
-}
-
-resource "google_bigquery_table" "task_cf_table" {
-  dataset_id = google_bigquery_dataset.task_cf_dataset.dataset_id
-  table_id   = var.table_id
-  schema = file("schemas/bq_table_schema/task-cf-raw.json")
-}
-
-resource "google_pubsub_topic" "topic" {
-  name = var.pubsub_topic_name
-}
-
-resource "google_pubsub_subscription" "subscription" {
-  name  = var.subscription_name
-  topic = google_pubsub_topic.topic.name
-}
-
-data "archive_file" "source" {
-    type        = "zip"
-    source_dir  = "./function"
-    output_path = "/tmp/function.zip"
-}
-
-resource "google_storage_bucket_object" "zip" {
-    source       = data.archive_file.source.output_path
-    content_type = "application/zip"
-
-    name         = "func-${data.archive_file.source.output_md5}.zip"
-    bucket       = google_storage_bucket.task-cf-storage-bucket.name
-
-    depends_on   = [
-        google_storage_bucket.task-cf-storage-bucket,
-        data.archive_file.source
-    ]
 }
 
 #IAM stuff
@@ -75,11 +29,57 @@ data "google_project" "project" {
 
 }
 
+data "archive_file" "source" {
+    type        = "zip"
+    source_dir  = "../function"
+    output_path = "/tmp/function.zip"
+}
+
+
+resource "google_storage_bucket" "task-cf-storage-bucket" {
+  name     = "${var.project_id}-storage-bucket"
+  location = var.region
+}
+
+resource "google_bigquery_dataset" "task_cf_dataset" {
+  dataset_id = var.dataset_id
+  description = "Public dataset for cf-task"
+
+  location = var.region
+}
+
+resource "google_bigquery_table" "task_cf_table" {
+  dataset_id = google_bigquery_dataset.task_cf_dataset.dataset_id
+  table_id   = var.table_id
+  schema = file("../schemas/bq_table_schema/task-cf-raw.json")
+}
+
+resource "google_pubsub_topic" "topic" {
+  name = var.pubsub_topic_name
+}
+
+resource "google_pubsub_subscription" "subscription" {
+  name  = var.subscription_name
+  topic = google_pubsub_topic.topic.name
+}
+
+resource "google_storage_bucket_object" "zip" {
+    source       = data.archive_file.source.output_path
+    content_type = "application/zip"
+
+    name         = "func-${data.archive_file.source.output_md5}.zip"
+    bucket       = google_storage_bucket.task-cf-storage-bucket.name
+
+    depends_on   = [
+        google_storage_bucket.task-cf-storage-bucket,
+        data.archive_file.source
+    ]
+}
+
 resource "google_cloudbuild_trigger" "github-trigger" {
   project = var.project_id
   name = "cf-update-trigger"
   filename = "cloudbuild.yaml"
-  location = "us-central1"
   github {
     owner = "BurlyLlama28"
     name = "gcp-cloud-function-task"
