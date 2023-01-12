@@ -107,10 +107,10 @@ resource "google_cloudfunctions_function" "task-cf-function" {
       TOPIC_ID = var.pubsub_topic_name
     }
 
-    depends_on            = [
-        google_storage_bucket.task-cf-storage-bucket,
-        google_storage_bucket_object.zip
-    ]
+    # depends_on            = [
+    #     google_storage_bucket.task-cf-storage-bucket,
+    #     google_storage_bucket_object.zip
+    # ]
 }
 
 resource "google_cloudfunctions_function_iam_member" "invoker" {
