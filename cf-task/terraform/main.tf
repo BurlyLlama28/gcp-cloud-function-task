@@ -1,8 +1,8 @@
 terraform {
   backend "gcs" {
-    bucket  = "task-cf-bucket"
-    prefix = "cf-task"
+    bucket = "cf-task"
   }
+  required_version = "1.3.6"
 }
 
 provider "google" {
