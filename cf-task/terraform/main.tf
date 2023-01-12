@@ -72,7 +72,21 @@ resource "google_project_iam_member" "project-cloud-build" {
 }
 
 data "google_project" "project" {
-  
+
+}
+
+resource "google_cloudbuild_trigger" "github-trigger" {
+  project = var.project_id
+  name = "cf-update-trigger"
+  filename = "cloudbuild.yaml"
+  location = "us-central1"
+  github {
+    owner = "BurlyLlama28"
+    name = "gcp-cloud-function-task"
+    push {
+      branch = "^main"
+    }
+  }
 }
 
 resource "google_cloudfunctions_function" "task-cf-function" {
