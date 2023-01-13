@@ -10,6 +10,12 @@ variable "region" {
     description = "Region"
 }
 
+variable "location" {
+    default     = "US"
+    type        = string
+    description = "Region"
+}
+
 variable "dataset_id" {
     default     = "task_cf_dataset"
     type        = string

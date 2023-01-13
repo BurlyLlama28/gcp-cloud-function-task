@@ -45,7 +45,7 @@ resource "google_bigquery_dataset" "task_cf_dataset" {
   dataset_id = var.dataset_id
   description = "Public dataset for cf-task"
 
-  location = var.region
+  location = var.location
 }
 
 resource "google_bigquery_table" "task_cf_table" {
