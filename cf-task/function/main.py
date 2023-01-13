@@ -12,8 +12,8 @@ from google.cloud.pubsub_v1 import PublisherClient
 logging.basicConfig(level=logging.INFO)
 
 
-FUNCTION_REGION = getenv("FUNCTION_REGION")
 PROJECT_ID = getenv("GCP_PROJECT")
+DATASET_ID = getenv("DATASET_ID")
 OUTPUT_TABLE = getenv("OUTPUT_TABLE")
 PUBSUB_TOPIC_ID = getenv("TOPIC_ID")
 
@@ -78,7 +78,7 @@ def main(request):
                    {'Content-Type': 'application/json; charset=utf-8'}
 
         timestamp = time.time()
-        dataset = f"{PROJECT_ID}.{OUTPUT_TABLE}"
+        dataset = f"{PROJECT_ID}.{DATASET_ID}.{OUTPUT_TABLE}"
         store_data_into_bq(dataset,
                            convert_timestamp_to_sql_date_time(timestamp),
                            event)
