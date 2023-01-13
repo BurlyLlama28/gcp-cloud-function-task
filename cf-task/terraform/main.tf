@@ -100,7 +100,6 @@ resource "google_cloudfunctions_function" "task-cf-function" {
     trigger_http          = true
 
     environment_variables = {
-      FUNCTION_REGION = var.region
       GCP_PROJECT = var.project_id
       DATASET_ID = var.dataset_id
       OUTPUT_TABLE = google_bigquery_table.task_cf_table.table_id
