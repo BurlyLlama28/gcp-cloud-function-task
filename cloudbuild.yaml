@@ -24,7 +24,7 @@ steps:
     dir: 'cf-task/terraform'
     args:
       - '-c'
-      - 'terraform plan'
+      - 'terraform plan -lock=false'
 
   - id: 'tf apply'
     name: 'hashicorp/terraform:1.0.0'
