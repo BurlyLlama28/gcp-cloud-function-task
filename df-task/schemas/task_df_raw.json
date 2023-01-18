@@ -1,0 +1,22 @@
+[
+    {
+      "name": "name",
+      "type": "STRING",
+      "mode": "REQUIRED"
+    },
+    {
+      "name": "age",
+      "type": "INTEGER",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "mail",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "timestamp",
+      "type": "TIMESTAMP",
+      "mode": "REQUIRED"
+    }
+  ]

@@ -1,6 +1,6 @@
 import setuptools
 
-REQUIRED_PACKAGES = ['some_package==2.8.3', 'another_package==0.3.0']
+REQUIRED_PACKAGES = ['apache_beam', 'apache_beam[gcp]', 'apache_beam[interactive]']
 
 setuptools.setup(
     name='setup',
