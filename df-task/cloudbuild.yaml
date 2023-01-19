@@ -9,7 +9,7 @@ steps:
     name: 'gcr.io/cloud-function-371409/dataflow-python3:latest'
     entrypoint: 'python'
     args: [ '-m', 'main',
-         "--job_name=your_job_name",
+         "--job_name=dataflow_job",
          "--project=cloud-function-371409",
          "--region=us-east1",
          "--template_location=gs://cloud-function-371409-dataflow-templates/my-template/templates/template_test",
