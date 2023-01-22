@@ -83,7 +83,7 @@ resource "google_bigquery_table" "df_error_messages_table" {
 
 resource "google_dataflow_job" "big_data_job" {
   name                  = "dataflow-job"
-  template_gcs_path     = "gs://task-cf-370710-dataflow-bucket/template/dataflow-job"
-  temp_gcs_location     = "gs://task-cf-370710-dataflow-bucket/tmp"
+  template_gcs_path     = "gs://cloud-function-371409-dataflow-bucket/template/dataflow-job"
+  temp_gcs_location     = "gs://cloud-function-371409-dataflow-bucket/tmp"
   service_account_email = "${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }

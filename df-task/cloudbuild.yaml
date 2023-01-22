@@ -8,15 +8,18 @@ steps:
   - id: "Create dataflow template"
     name: 'gcr.io/cloud-function-371409/dataflow-python3:latest'
     entrypoint: 'python'
-    args: [ '-m', 'main',
+    args: [ 'df-task/function/main.py',
          "--job_name=dataflow_job",
          "--project=cloud-function-371409",
-         "--region=us-east1",
+         "--region=us-central1",
+         "--input_subscription=projects/cloud-function-371409/subscriptions/df-pub_sub-subscription",
+         "--output_table=cloud-function-371409:task_df_dataset.table-dataflow",
+         "--output_error_table=cloud-function-371409:task_df_dataset.table-dataflow-error",
          "--template_location=gs://cloud-function-371409-dataflow-templates/my-template/templates/template_test",
          "--staging_location=gs://cloud-function-371409-dataflow-templates/my-template/staging/",
          "--temp_location=gs://cloud-function-371409-dataflow-templates/my-template/temp/",
          "--runner=DataflowRunner",
-         "--setup_file='./setup.py'",
+         "--setup_file='df-task/function/setup.py'",
          "--autoscaling_algorithm=NONE"
          ]
     waitFor: [

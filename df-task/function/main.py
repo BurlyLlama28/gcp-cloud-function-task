@@ -1,21 +1,23 @@
-import apache_beam as beam
 import argparse
-from apache_beam.options.pipeline_options import PipelineOptions
-from apache_beam.options.pipeline_options import SetupOptions
+import datetime
+import json
+
+import apache_beam as beam
+from apache_beam.options.pipeline_options import PipelineOptions, SetupOptions
 
 SCHEMA = ",".join(
     [
-        "field1:STRING",
-        "field2:INTEGER",
-        "field3:FLOAT64",
-        "field4:TIMESTAMP",
+        "name:STRING",
+        "age:INTEGER",
+        "mail:STRING",
+        "timestamp:TIMESTAMP",
     ]
 )
 
 ERROR_SCHEMA = ",".join(
     [
-        "field1:STRING",
-        "field2:TIMESTAMP",
+        "error_msg:STRING",
+        "timestamp:TIMESTAMP",
     ]
 )
 
@@ -25,10 +27,14 @@ class Parser(beam.DoFn):
 
     def process(self, line):
         try:
-            data_row = # parse json message according to table schema
+            data_row = json.loads(line.decode("utf-8"))
+            if not ("name" in line or "age" in data_row):
+                raise ValueError("Missing required parameters: both 'name' and 'age' fields should be specified")
+            data_row["timestamp"] = datetime.datetime.utcnow()
             yield data_row
+
         except Exception as error:
-            error_row = # parse json message according to ERRORS table schema
+            error_row = {"error_msg": str(error), "timestamp": datetime.datetime.utcnow()}
             yield beam.pvalue.TaggedOutput(self.ERROR_TAG, error_row)
 
 
@@ -69,7 +75,53 @@ if __name__ == '__main__':
     parser.add_argument(
         '--output_error_table', required=True,
         help='Output BigQuery table for errors')
-    known_args, pipeline_args = parser.parse_known_args()
-    pipeline_options = PipelineOptions(pipeline_args)
-    pipeline_options.view_as(SetupOptions).save_main_session = True
-    run(pipeline_options, known_args.input_subscription, known_args.output_table, known_args.output_error_table)
+    parser.add_argument(
+        '--project', required=True,
+        help='Project ID')
+    parser.add_argument(
+        '--region', required=False, default="US",
+        help='Region')
+    parser.add_argument(
+        '--job_name', required=False, default="dataflow-job",
+        help='Dataflow Job name')
+    parser.add_argument(
+        '--template_location', required=True,
+        default="gs://task-cf-370710-dataflow-bucket/template/dataflow-job",
+        help='Template location')
+    parser.add_argument(
+        '--staging_location', required=True,
+        default="gs://task-cf-370710-dataflow-bucket/tmp",
+        help='Staging location')
+    parser.add_argument(
+        '--temp_location', required=True,
+        default="gs://task-cf-370710-dataflow-bucket/tmp",
+        help='Temporary location')
+    parser.add_argument(
+        '--runner', required=False, default="DataflowRunner",
+        help='task-df runner')
+    parser.add_argument(
+        '--setup_file', required=False, default="setup.py",
+        help='Requirements setup file path')
+    parser.add_argument(
+        '--autoscaling_algorithm', required=False, default=None,
+        help='Autoscaling algorithm')
+
+    args = parser.parse_args()
+    pipeline_options = {
+        'project': args.project,
+        'runner': args.runner,
+        'region': args.region,
+        'staging_location': args.staging_location,
+        'temp_location': args.temp_location,
+        'template_location': args.template_location,
+        'save_main_session': True,
+        'streaming': True,
+        'job_name': args.job_name,
+    }
+    pipeline_options = PipelineOptions.from_dictionary(pipeline_options)
+    run(
+        options=pipeline_options,
+        input_subscription=args.input_subscription,
+        output_table=args.output_table,
+        output_error_table=args.output_error_table,
+    )
