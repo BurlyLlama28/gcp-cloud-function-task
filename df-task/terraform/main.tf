@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "df-storage-task"
+    bucket = "cf-storage-task"
     prefix = "df-task"
   }
 }
@@ -64,7 +64,7 @@ resource "google_bigquery_dataset" "task_df_dataset" {
 resource "google_bigquery_table" "df_usual_messages_table" {
   dataset_id = var.dataset_id
   table_id   = var.table_id
-  schema = file("../schemas/bq_table_schema/task_df_raw.json")
+  schema = file("../schemas/task_df_raw.json")
 
   depends_on = [
     google_bigquery_dataset.task_df_dataset
@@ -74,7 +74,7 @@ resource "google_bigquery_table" "df_usual_messages_table" {
 resource "google_bigquery_table" "df_error_messages_table" {
   dataset_id = var.dataset_id
   table_id   = var.table_error_id
-  schema = file("../schemas/bq_table_schema/task_df_error_raw.json")
+  schema = file("../schemas/task_df_error_raw.json")
 
   depends_on = [
     google_bigquery_dataset.task_df_dataset
@@ -83,7 +83,7 @@ resource "google_bigquery_table" "df_error_messages_table" {
 
 resource "google_dataflow_job" "big_data_job" {
   name                  = "dataflow-job"
-  template_gcs_path     = "gs://cloud-function-371409-dataflow-bucket/template/dataflow-job"
-  temp_gcs_location     = "gs://cloud-function-371409-dataflow-bucket/tmp"
+  template_gcs_path     = "gs://cloud-function-371409-df-storage-bucket/template/dataflow-job"
+  temp_gcs_location     = "gs://cloud-function-371409-df-storage-bucket/tmp"
   service_account_email = "${data.google_project.project.number}@cloudbuild.gserviceaccount.com"
 }
