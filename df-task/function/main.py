@@ -62,28 +62,6 @@ def run(options, input_subscription, output_table, output_error_table):
         )
     )
 
-    with beam.Pipeline(options=options) as pipeline:
-        rows, error_rows = \
-            (pipeline | 'Read from PubSub' >> beam.io.ReadFromPubSub(subscription=input_subscription)
-             | 'Parse JSON messages' >> beam.ParDo(Parser()).with_outputs(Parser.ERROR_TAG,
-                                                                                main='rows')
-             )
-
-        _ = (rows | 'Write data to BigQuery'
-             >> beam.io.WriteToBigQuery(output_table,
-                                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                                        schema=SCHEMA
-                                        )
-             )
-
-        _ = (error_rows | 'Write errors to BigQuery'
-             >> beam.io.WriteToBigQuery(output_error_table,
-                                        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-                                        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-                                        schema=ERROR_SCHEMA
-                                        )
-             )
 
 
 if __name__ == '__main__':
