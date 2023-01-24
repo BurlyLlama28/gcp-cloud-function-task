@@ -15,9 +15,9 @@ steps:
          "--input_subscription=projects/cloud-function-371409/subscriptions/cf_pubsub_subscrp",
          "--output_table=cloud-function-371409:task_df_dataset.df_usual_messages_table",
          "--output_error_table=cloud-function-371409:task_df_dataset.df_error_messages_table",
-         "--template_location=gs://cloud-function-371409-dataflow-templates/my-template/templates/template_test",
-         "--staging_location=gs://cloud-function-371409-dataflow-templates/my-template/staging/",
-         "--temp_location=gs://cloud-function-371409-dataflow-templates/my-template/temp/",
+         "--template_location=gs://cloud-function-371409-df-storage-bucket/template/dataflow-job",
+         "--staging_location=gs://cloud-function-371409-df-storage-bucket/tmp",
+         "--temp_location=gs://cloud-function-371409-df-storage-bucket/tmp",
          "--runner=DataflowRunner",
          "--setup_file='df-task/function/setup.py'",
          "--autoscaling_algorithm=NONE"
