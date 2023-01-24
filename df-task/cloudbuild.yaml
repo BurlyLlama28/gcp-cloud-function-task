@@ -12,7 +12,7 @@ steps:
          "--job_name=dataflow_job",
          "--project=cloud-function-371409",
          "--region=us-central1",
-         "--input_subscription=projects/cloud-function-371409/subscriptions/topics/cf_pubsub_subscrp",
+         "--input_subscription=projects/cloud-function-371409/subscriptions/cf_pubsub_subscrp",
          "--output_table=cloud-function-371409:task_df_dataset.df_usual_messages_table",
          "--output_error_table=cloud-function-371409:task_df_dataset.df_error_messages_table",
          "--template_location=gs://cloud-function-371409-dataflow-templates/my-template/templates/template_test",
