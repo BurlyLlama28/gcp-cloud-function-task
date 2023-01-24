@@ -9,7 +9,7 @@ steps:
     name: 'gcr.io/cloud-function-371409/dataflow-python3:latest'
     entrypoint: 'python'
     args: [ 'df-task/function/main.py',
-         "--job_name=dataflow_job",
+         "--job_name=dataflow-job",
          "--project=cloud-function-371409",
          "--region=us-central1",
          "--input_subscription=projects/cloud-function-371409/subscriptions/cf_pubsub_subscrp",
