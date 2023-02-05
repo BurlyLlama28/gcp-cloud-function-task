@@ -28,12 +28,13 @@ class Parser(beam.DoFn):
     def process(self, line):
         try:
             data_row = json.loads(line.decode("utf-8"))
-            if not ("name" in line or "age" in data_row):
+            if not ("name" in data_row or "age" in data_row):
                 raise ValueError("Missing required parameters: both 'name' and 'age' fields should be specified")
             data_row["timestamp"] = datetime.datetime.utcnow()
             yield data_row
 
         except Exception as error:
+            print(f"Error is: {error}")
             error_row = {"error_msg": str(error), "timestamp": datetime.datetime.utcnow()}
             yield beam.pvalue.TaggedOutput(self.ERROR_TAG, error_row)
 
@@ -43,24 +44,24 @@ def run(options, input_subscription, output_table, output_error_table):
     with beam.Pipeline(options=options) as pipeline:
         rows, error_rows = \
         (pipeline | 'Read from PubSub' >> beam.io.ReadFromPubSub(subscription=input_subscription)
-        | 'Parse JSON messages' >> beam.ParDo(Parser()).with_outputs(Parser.ERROR_TAG, main='rows')
-    )
-    
-    _ = (rows | 'Write data to BigQuery'
-        >> beam.io.WriteToBigQuery(output_table,
-        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-        schema=SCHEMA
+            | 'Parse JSON messages' >> beam.ParDo(Parser()).with_outputs(Parser.ERROR_TAG, main='rows')
         )
-    )
     
-    _ = (error_rows | 'Write errors to BigQuery'
-        >> beam.io.WriteToBigQuery(output_error_table,
-        create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
-        write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
-        schema=ERROR_SCHEMA
+        _ = (rows | 'Write data to BigQuery'
+            >> beam.io.WriteToBigQuery(output_table,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+            schema=SCHEMA
+            )
         )
-    )
+    
+        _ = (error_rows | 'Write errors to BigQuery'
+            >> beam.io.WriteToBigQuery(output_error_table,
+            create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
+            write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+            schema=ERROR_SCHEMA
+            )
+        )
 
 
 
